@@ -7,7 +7,7 @@
 	        header
 	      </div>
 	      <div class="card-body">
-	      	<p >ID: {{productId}}</p>
+	      	<p >SKU: {{productId}}</p>
 	        <p >Product Name: {{productName}}</p>
 	        <p >Product Price: ${{productPrice}}</p>
 	        <button class="btn btn-success"> Buy Now</button>

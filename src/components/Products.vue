@@ -37,7 +37,7 @@
             <thead>
               <tr>
                 <th scope="col">
-                  Product ID
+                  Product SKU
                 </th>
                 <th>
                   Product Name
@@ -67,10 +67,22 @@
                 </template>
                 <template v-else>
                   <td>
-                    {{product.product_id}}
+                    <router-link
+                      :to="{
+                      name:'ProductPage',
+                      params:{id: product.id}
+                    }">
+                      {{product.product_id}}
+                    </router-link>
                   </td>
                   <td>
+                    <router-link
+                      :to="{
+                      name:'ProductPage',
+                      params:{id: product.id}
+                    }">
                     {{product.product_name}}
+                    </router-link>
                   </td>
                   <td>
                     {{product.product_price}}
