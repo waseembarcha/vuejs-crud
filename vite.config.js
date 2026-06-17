@@ -9,6 +9,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  base: '/vuejs-crud/',
   server: {
     port: 5173,
     strictPort: false,
