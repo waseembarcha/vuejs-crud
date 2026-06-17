@@ -1,21 +1,19 @@
 <template>
   <div id="app">
-    <Navbar/>
-    <div class="container">
-      <router-view/>
+    <Navbar />
+    <div class="container mt-4">
+      <RouterView />
     </div>
   </div>
 </template>
 
-<script>
-import Navbar from '@/components/Navbar'
-export default {
-  name: 'App',
-  components:{
-    Navbar
-  }
-}
+<script setup>
+import { RouterView } from 'vue-router'
+import Navbar from '@/components/Navbar.vue'
 </script>
 
-<style>
+<style scoped>
+#app {
+  min-height: 100vh;
+}
 </style>
