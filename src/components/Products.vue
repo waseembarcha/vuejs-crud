@@ -1,219 +1,247 @@
 <template>
   <div class="products">
-    <h3>Products</h3>
-    <div class="card">
-      <div class="card-header">
+    <h3 class="mb-4">Products</h3>
+
+    <!-- Add Product Form -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
         Add a new product
       </div>
       <div class="card-body">
-        <form class="form-inline" v-on:submit.prevent="onSubmit">
-          <div class="form-group">
-            <label>ID</label>
-            <input v-model="productData.product_id" type="text" class="form-control ml-sm-2 mr-sm-4 my-2"  required>
-          </div>
-          <div class="form-group">
-            <label>Name</label>
-            <input v-model="productData.product_name" type="text" class="form-control ml-sm-2 mr-sm-4 my-2" required>
-          </div>
-          <div class="form-group">
-            <label>Price</label>
-            <input v-model="productData.product_price" type="text" class="form-control ml-sm-2 mr-sm-4 my-2" required>
-          </div>
-          <div class="ml-auto text-right">
-            <button type="submit" class="btn btn-primary my-2">Add</button>
-            
+        <form @submit.prevent="onSubmit">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="productId" class="form-label">Product ID</label>
+              <input
+                id="productId"
+                v-model="productData.product_id"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="productName" class="form-label">Product Name</label>
+              <input
+                id="productName"
+                v-model="productData.product_name"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="productPrice" class="form-label">Product Price</label>
+              <input
+                id="productPrice"
+                v-model="productData.product_price"
+                type="number"
+                class="form-control"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary w-100">
+                Add
+              </button>
+            </div>
           </div>
         </form>
       </div>
     </div>
 
-    <div class="card mt-5">
-      <div class="card-header">
+    <!-- Product List -->
+    <div class="card">
+      <div class="card-header bg-primary text-white">
         Product List
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
+        <div class="table-responsive" v-if="products.length > 0">
+          <table class="table table-hover">
             <thead>
               <tr>
-                <th scope="col">
-                  Product ID
-                </th>
-                <th>
-                  Product Name
-                </th>
-                <th>
-                  Product Price
-                </th>
-                <th>
-                  Action
-                </th>
+                <th scope="col">Product ID</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Price</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="product in sortedProducts" v-bind:key="product.id">
-                <template v-if="editId == product.id">
-                  <td><input v-model="editProductData.product_id" type="text"></td>
-                  <td><input v-model="editProductData.product_name" type="text"></td>
-                  <td><input v-model="editProductData.product_price" type="text"></td>
+              <tr v-for="product in sortedProducts" :key="product.id">
+                <template v-if="editId === product.id">
                   <td>
-                    <span class="icon">
-                      <i  @click="onEditSubmit(product.id)" class="fa fa-check"></i>
-                    </span>
-                    <span class="icon">
-                      <i  @click="onCancel" class="fa fa-ban"></i>
-                    </span>
+                    <input v-model="editProductData.product_id" type="text" class="form-control" />
+                  </td>
+                  <td>
+                    <input v-model="editProductData.product_name" type="text" class="form-control" />
+                  </td>
+                  <td>
+                    <input
+                      v-model="editProductData.product_price"
+                      type="number"
+                      step="0.01"
+                      class="form-control"
+                    />
+                  </td>
+                  <td>
+                    <button
+                      @click="onEditSubmit(product.id)"
+                      class="btn btn-sm btn-success me-2"
+                    >
+                      <i class="fa fa-check"></i> Save
+                    </button>
+                    <button @click="onCancel" class="btn btn-sm btn-secondary">
+                      <i class="fa fa-ban"></i> Cancel
+                    </button>
                   </td>
                 </template>
                 <template v-else>
+                  <td>{{ product.product_id }}</td>
+                  <td>{{ product.product_name }}</td>
+                  <td>${{ parseFloat(product.product_price).toFixed(2) }}</td>
                   <td>
-                    {{product.product_id}}
-                  </td>
-                  <td>
-                    {{product.product_name}}
-                  </td>
-                  <td>
-                    {{product.product_price}}
-                  </td>
-                  <td>
-
-                    <a href="#" class="icon">
-                      <i v-on:click="onDelete(product.id)" class="fa fa-trash"></i>
-                    </a>
-                    <a href="#" class="icon">
-                      <i v-on:click="onEdit(product)" class="fa fa-pencil"></i>
-                    </a>
-                    <router-link 
-                    :to="{
-                      name:'ProductPage', 
-                      params:{id: product.id}
-                    }" 
-                    class="icon"
+                    <RouterLink
+                      :to="{ name: 'ProductPage', params: { id: product.id } }"
+                      class="btn btn-sm btn-info me-2"
                     >
-                      <i class="fa fa-eye"></i>
-                    </router-link>
+                      <i class="fa fa-eye"></i> View
+                    </RouterLink>
+                    <button
+                      @click="onEdit(product)"
+                      class="btn btn-sm btn-warning me-2"
+                    >
+                      <i class="fa fa-pencil"></i> Edit
+                    </button>
+                    <button
+                      @click="onDelete(product.id)"
+                      class="btn btn-sm btn-danger"
+                    >
+                      <i class="fa fa-trash"></i> Delete
+                    </button>
                   </td>
                 </template>
               </tr>
-
             </tbody>
           </table>
         </div>
+        <div v-else class="alert alert-info">
+          No products found. Add one to get started!
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
-<script>
-import db from '@/db'
-export default {
-  name: 'Products',
-  data () {
-    return {
-      editId: '',
-      productData: {
-        'id' : '',
-        'product_id': '',
-        'product_name': '',
-        'product_price': ''
-      },
-      editProductData: {
-        'id' : '',
-        'product_id': '',
-        'product_name': '',
-        'product_price': ''
-      },
-      products: []
-    }
-  },
-  created() {
-    this.getProducts()
-  },
-  computed:{
-    sortedProducts(){
-      return this.products.slice().sort((a,b)=>{
-        return a.product_id - b.product_id
-      })
-    }
-  },
-  methods: {
-    getProducts() {
-      db.collection('products').get().then(querySnapshot =>{
-        const products = []
-        // querySnapshot.forEach((doc)=>{
-        //   products.push(doc.data())
-        // })
-        const productsArray = []
-        let i = 0
-        querySnapshot.forEach((doc)=>{
-          productsArray.push(doc.data())
-          productsArray[i].id = doc.id
-          products.push(productsArray[i])
-          i++
-        })
-        // for(let key in querySnapshot.docs){
-        //   productsArray.push(querySnapshot.docs[key].data())
-        //   productsArray[key].id = querySnapshot.docs[key].id
-        //   products.push(productsArray[key])
-        // }
-        this.products = products
-      })
-    },
-    onSubmit(){
-      db.collection('products').add(this.productData).then(this.getProducts)
-      this.productData.product_id = ''
-      this.productData.product_name = ''
-      this.productData.product_price = ''
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
+import { getProducts, addProduct, updateProduct, deleteProduct } from '@/services/productService'
 
-    },
-    // onDelete(product_id){
-    //   db.collection('products').where('product_id', '==', product_id).get().then(querySnapshot =>{
-    //     querySnapshot.forEach(doc=>{
-    //       doc.ref.delete().then(this.getProducts)
-    //     })
-    //   })
-    // }
-    onDelete(id){
-      db.collection('products').doc(id).delete().then((data)=> {
-          this.getProducts()
-      })
-    },
-    onEdit(product){
-      this.editId = product.id
-      this.editProductData.product_id = product.product_id
-      this.editProductData.product_name = product.product_name
-      this.editProductData.product_price = product.product_price
-    },
-    onCancel(){
-      this.editId = ''
-      this.editProductData.product_id = ''
-      this.editProductData.product_name = ''
-      this.editProductData.product_price = ''
-    },
-    onEditSubmit (id){
-      db.collection("products").doc(id).set(this.editProductData).then(
-        this.getProducts)
-        this.editId = ''
-        this.editProductData.product_id = ''
-        this.editProductData.product_name = ''
-        this.editProductData.product_price = ''
+const products = ref([])
+const editId = ref('')
+
+const productData = ref({
+  product_id: '',
+  product_name: '',
+  product_price: ''
+})
+
+const editProductData = ref({
+  product_id: '',
+  product_name: '',
+  product_price: ''
+})
+
+const sortedProducts = computed(() => {
+  return products.value
+    .slice()
+    .sort((a, b) => parseInt(a.product_id) - parseInt(b.product_id))
+})
+
+const fetchProducts = async () => {
+  try {
+    products.value = await getProducts()
+  } catch (error) {
+    console.error('Error fetching products:', error)
+  }
+}
+
+const onSubmit = async () => {
+  try {
+    await addProduct(productData.value)
+    productData.value = {
+      product_id: '',
+      product_name: '',
+      product_price: ''
+    }
+    await fetchProducts()
+  } catch (error) {
+    console.error('Error adding product:', error)
+  }
+}
+
+const onDelete = async (id) => {
+  if (confirm('Are you sure you want to delete this product?')) {
+    try {
+      await deleteProduct(id)
+      await fetchProducts()
+    } catch (error) {
+      console.error('Error deleting product:', error)
     }
   }
 }
+
+const onEdit = (product) => {
+  editId.value = product.id
+  editProductData.value = {
+    product_id: product.product_id,
+    product_name: product.product_name,
+    product_price: product.product_price
+  }
+}
+
+const onCancel = () => {
+  editId.value = ''
+  editProductData.value = {
+    product_id: '',
+    product_name: '',
+    product_price: ''
+  }
+}
+
+const onEditSubmit = async (id) => {
+  try {
+    await updateProduct(id, editProductData.value)
+    editId.value = ''
+    editProductData.value = {
+      product_id: '',
+      product_name: '',
+      product_price: ''
+    }
+    await fetchProducts()
+  } catch (error) {
+    console.error('Error updating product:', error)
+  }
+}
+
+onMounted(() => {
+  fetchProducts()
+})
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3{
+h3 {
   text-align: center;
-  margin-top: 30px;
-  margin-bottom: 20px;
+  color: #333;
+  font-weight: 600;
 }
-.icon{
-  margin-right: 10px;
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
 }
-.icon i{
-  cursor: pointer;
+
+.btn-sm {
+  margin-right: 5px;
 }
 </style>
