@@ -24,12 +24,7 @@ git clone https://github.com/waseembarcha/vuejs-crud.git
 cd vuejs-crud
 ```
 
-2. Switch to the `copilot` branch:
-```bash
-git checkout copilot
-```
-
-3. Install dependencies:
+2. Install dependencies:
 ```bash
 npm install
 ```
