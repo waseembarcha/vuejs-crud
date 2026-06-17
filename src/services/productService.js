@@ -12,10 +12,13 @@ export const getProducts = async () => {
     const querySnapshot = await getDocs(productsCollection)
     const products = []
 
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data()
       products.push({
-        id: doc.id,
-        ...doc.data()
+        id: docSnap.id,
+        product_id: data.product_id || '',
+        product_name: data.product_name || '',
+        product_price: data.product_price || ''
       })
     })
 
@@ -37,9 +40,12 @@ export const getProductById = async (productId) => {
     const docSnap = await getDoc(docRef)
 
     if (docSnap.exists()) {
+      const data = docSnap.data()
       return {
         id: docSnap.id,
-        ...docSnap.data()
+        product_id: data.product_id || '',
+        product_name: data.product_name || '',
+        product_price: data.product_price || ''
       }
     } else {
       return null
